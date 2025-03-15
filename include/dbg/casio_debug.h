@@ -1,0 +1,1 @@
+void debug_and_wait(char* str);

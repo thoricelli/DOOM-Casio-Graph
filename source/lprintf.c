@@ -41,10 +41,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
 
 #include "doomtype.h"
 #include "lprintf.h"
 #include "i_main.h"
+
+#include "dbg/casio_debug.h"
 
 /* cphipps - enlarged message buffer and made non-static
  * We still have to be careful here, this function can be called after exit
@@ -59,12 +62,13 @@ int lprintf(OutputLevels pri, const char *s, ...)
 	va_start(v,s);
 	
 	vsprintf(msg,s,v);
+	debug_and_wait(msg);
 	
 	va_end(v);
 
-    int len = strlen(msg);
+    //int len = strlen(msg);
 
-    printf("%s\n", msg);
+    //printf("%s\n", msg);*/
 
     return 0;
 }

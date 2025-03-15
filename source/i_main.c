@@ -80,7 +80,7 @@ static void PrintVer(void)
     lprintf(LO_INFO,"%s",I_GetVersionString(vbuf,200));
 }
 
-int main(int argc, const char * const * argv)
+int main()
 {
     /* cphipps - call to video specific startup code */
     I_PreInitGraphics();
