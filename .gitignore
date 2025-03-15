@@ -54,3 +54,10 @@ source/iwad/doom64.c
 source/iwad/
 
 .qtc_clangd/
+
+
+CMakeFiles
+/gint/
+/build-fx/
+/.CasioDevFiles/
+/.vscode/
