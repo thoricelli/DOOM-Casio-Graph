@@ -221,6 +221,17 @@ const texture_t* R_GetTexture(int texture)
     return t;
 }
 
+char *strupr(char s[])
+{
+  char	*p;
+
+  for (p = s; *p; ++p)
+    *p = toupper(*p);
+
+  return(s);
+
+}	
+
 static int R_GetTextureNumForName(const char* tex_name)
 {
     const int  *maptex1, *maptex2;
@@ -294,7 +305,7 @@ int R_LoadTextureByName(const char* tex_name)
 
     if(tnum == -1)
     {
-        printf("texture name: %s not found.\n", tex_name);
+        //printf("texture name: %s not found.\n", tex_name);
         return NO_TEXTURE;
     }
 

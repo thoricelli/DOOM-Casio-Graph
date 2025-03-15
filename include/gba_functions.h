@@ -2,6 +2,7 @@
 #define GBA_FUNCTIONS_H
 
 #include <string.h>
+#include <stdlib.h>
 #include "doomtype.h"
 #include "m_fixed.h"
 
@@ -10,6 +11,36 @@
     #include <gba_dma.h>
 #endif
 
+inline static void reverse(char s[])
+{
+  int i, j;
+  char c;
+  
+  for (i = 0, j = strlen(s) - 1; i < j; i++, j--)
+    {
+      c = s[i];
+      s[i] = s[j];
+      s[j] = c;
+    }
+}
+
+inline static void itoa(int n, char s[], int width)
+{
+  int i, sign;
+
+  sign = n;
+  n = abs(n);            // sets n to be positive
+  i = 0;
+  do {                   // generate digits in reverse order      
+    s[i++] = n % 10 + '0';
+  } while ((n /= 10) > 0);
+  if (sign < 0)
+    s[i++] = '-';
+  for (;i < width; i++)  // add padding
+    s[i] = ' ';
+  s[i+1] = '\0';
+  reverse(s);
+}
 
 inline static CONSTFUNC int IDiv32 (int a, int b)
 {

@@ -49,6 +49,8 @@
 
 #include "global_data.h"
 
+#include <stdlib.h>
+
 // when to clip out sounds
 // Does not fit the large outdoor areas.
 #define S_CLIPPING_DIST (1200<<FRACBITS)
