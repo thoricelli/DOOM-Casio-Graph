@@ -38,6 +38,7 @@
 #include "doomtype.h"
 
 #include "m_recip.h"
+#include <stdint.h>
 
 /*
  * Fixed point, 32bit as 16.16.
@@ -72,6 +73,12 @@ inline static int CONSTFUNC D_abs(fixed_t x)
 
 fixed_t CONSTFUNC FixedMul(fixed_t a, fixed_t b);
 
+inline static fixed_t CONSTFUNC
+myabs(int i)
+{
+	return i < 0 ? -i : i;
+}
+
 /*
  * Fixed Point Division
  */
@@ -79,6 +86,23 @@ fixed_t CONSTFUNC FixedMul(fixed_t a, fixed_t b);
 /* CPhipps - made __inline__ to inline, as specified in the gcc docs
  * Also made const */
 
+inline static fixed_t CONSTFUNC FixedDiv(fixed_t a, fixed_t b)
+{
+    if ((myabs(a) >> 14) >= myabs(b))
+    {
+	return (a^b) < 0 ? INT_MIN : INT_MAX;
+    }
+    else
+    {
+	int64_t result;
+
+	result = ((int64_t) a << 16) / b;
+
+	return (fixed_t) result;
+    }
+}
+
+/*
 inline static fixed_t CONSTFUNC FixedDiv(fixed_t a, fixed_t b)
 {
 #ifndef GBA
@@ -90,7 +114,7 @@ inline static fixed_t CONSTFUNC FixedDiv(fixed_t a, fixed_t b)
 
     int q;
     int sign = (a^b) < 0; /* different signs */
-    unsigned int l,h;
+    /*unsigned int l,h;
 
     a = a<0 ? -a:a;
     b = b<0 ? -b:b;
@@ -104,7 +128,7 @@ inline static fixed_t CONSTFUNC FixedDiv(fixed_t a, fixed_t b)
 
     return q;
 #endif
-}
+}*/
 
 /* CPhipps -
  * FixedMod - returns a % b, guaranteeing 0<=a<b
@@ -126,7 +150,7 @@ inline static fixed_t CONSTFUNC FixedMod(fixed_t a, fixed_t b)
 }
 
 //Approx Reciprocal of v
-inline static CONSTFUNC fixed_t FixedReciprocal(fixed_t v)
+/*inline static CONSTFUNC fixed_t FixedReciprocal(fixed_t v)
 {
     unsigned int val = v < 0 ? -v : v;
 
@@ -141,7 +165,36 @@ inline static CONSTFUNC fixed_t FixedReciprocal(fixed_t v)
     fixed_t result = (reciprocalTable[val] >> shift);
 
     return v < 0 ? -result : result;
+}*/
+
+// Approximate reciprocal using Newton-Raphson method
+inline static CONSTFUNC fixed_t FixedReciprocal(fixed_t v)
+{
+    if (v == 0) return INT_MAX; // Handle division by zero case
+    
+    unsigned int abs_v = v < 0 ? -v : v;
+    unsigned int shift = 0;
+
+    // Normalize the value into a reasonable range
+    while (abs_v > (1 << FRACBITS))
+    {
+        abs_v >>= 1;
+        shift++;
+    }
+
+    // Initial estimate: Use bit shifting as a rough reciprocal approximation
+    fixed_t y = ((2 << FRACBITS) / abs_v); 
+
+    // Perform one or two Newton-Raphson iterations to refine accuracy
+    y = y * ((2 << FRACBITS) - ((v * y) >> FRACBITS)) >> FRACBITS;
+    y = y * ((2 << FRACBITS) - ((v * y) >> FRACBITS)) >> FRACBITS;
+
+    // Apply the shift
+    y >>= shift;
+
+    return v < 0 ? -y : y;
 }
+
 
 
 //Approx fixed point divide of a/b using reciprocal. -> a * (1/b).

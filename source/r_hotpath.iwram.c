@@ -77,9 +77,13 @@
 //*****************************************
 
 #ifndef GBA
-static byte vram1_spare[2560];
-static byte vram2_spare[2560];
-static byte vram3_spare[1024];
+//static byte vram1_spare[0/*2560*/];
+//static byte vram2_spare[0/*2560*/];
+//static byte vram3_spare[0/*1024*/];
+
+#define vram1_spare ((byte*)0xe5007000)
+#define vram2_spare ((byte*)0xe5007000 + 2560)
+#define vram3_spare ((byte*)0xe5007000 + 2560)
 #else
     #define vram1_spare ((byte*)0x6000000+0x9600)
     #define vram2_spare ((byte*)0x600A000+0x9600)
