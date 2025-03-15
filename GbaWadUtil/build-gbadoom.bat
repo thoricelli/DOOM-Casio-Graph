@@ -1,0 +1,1 @@
+gbawadutil.exe -in gbadoom.wad -cfile ..\source\iwad\gbadoom.c
