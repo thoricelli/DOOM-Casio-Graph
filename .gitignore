@@ -62,3 +62,11 @@ CMakeFiles
 /.CasioDevFiles/
 /.vscode/
 DOOM.g1a
+.vs
+debug
+release
+.qmake.stash
+GBADoom.qtvscr
+GBADoom.vcxproj
+GBADoom.vcxproj.filters
+GBADoom.sln

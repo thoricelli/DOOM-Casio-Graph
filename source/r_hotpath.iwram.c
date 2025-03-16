@@ -76,18 +76,14 @@
 //in IWRAM.
 //*****************************************
 
-#ifndef GBA
-//static byte vram1_spare[0/*2560*/];
-//static byte vram2_spare[0/*2560*/];
-//static byte vram3_spare[0/*1024*/];
-
-#define vram1_spare ((byte*)0xe5007000)
-#define vram2_spare ((byte*)0xe5007000 + 2560)
-#define vram3_spare ((byte*)0xe5007000 + 2560)
+#ifndef FX
+static byte vram1_spare[2560];
+static byte vram2_spare[2560];
+static byte vram3_spare[1024];
 #else
-    #define vram1_spare ((byte*)0x6000000+0x9600)
-    #define vram2_spare ((byte*)0x600A000+0x9600)
-    #define vram3_spare ((byte*)0x7000000)
+    #define vram1_spare ((byte*)0xe5007000)
+    #define vram2_spare ((byte*)0xe5007000 + 2560)
+    #define vram3_spare ((byte*)0xe5007000 + 2560)
 #endif
 
 //Stuff alloc'd in OAM memory.
@@ -140,13 +136,13 @@ short* negonearray = (short*)&vram2_spare[240];
 
 //*****************************************
 //Column cache stuff.
-//GBA has 16kb of Video Memory for columns
+//FX-series of calculators has some extra XRAM... only 8 kib tho.
 //*****************************************
 
-#ifndef GBA
+#ifndef FX
 static byte columnCache[128*128];
 #else
-    #define columnCache ((byte*)0x6014000)
+    #define columnCache ((byte*)0xe5017000)
 #endif
 
 

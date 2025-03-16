@@ -21,7 +21,7 @@
 extern "C"
 {
 
-extern const byte gammatable[2][32];
+extern const char gammatable[2][32];
 
 typedef enum
 {

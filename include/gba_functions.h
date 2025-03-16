@@ -11,6 +11,7 @@
     #include <gba_dma.h>
 #endif
 
+#ifdef FX
 inline static void reverse(char s[])
 {
   int i, j;
@@ -41,6 +42,7 @@ inline static void itoa(int n, char s[], int width)
   s[i+1] = '\0';
   reverse(s);
 }
+#endif
 
 inline static CONSTFUNC int IDiv32 (int a, int b)
 {

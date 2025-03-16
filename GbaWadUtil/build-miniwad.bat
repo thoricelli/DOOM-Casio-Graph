@@ -1,0 +1,1 @@
+gbawadutil.exe -in miniwad.wad -cfile ..\source\iwad\miniwad.c

@@ -1,0 +1,55 @@
+88000000
+0007D000
+00000014 = 8800
+0003E800
+
+We have 256 kb free of memory at 88040000 :D!
+
+https://bible.planet-casio.com/lephenixnoir/en/sh7305/calc/memory
+
+RAM: 256kb
+(
+    actually 512kb, but we don't want to mess with the OS. 
+    Hopefully find a way to get rid of all timers? 
+    So we can make use of it.
+    Find a way not to override our own program tho...
+)
+
+500kb of ROM mapped virtual memory
+(4 mb total ROM, 2.5+ in use by OS.)
+30kb of user memory
+
+On chip memory (aka f*cking fast)
+ILRAM: 4kb
+XRAM: 8kb
+YRAM: 8kb
+TOT: 20kb
+
+SPU (Sound Processing Unit) (only allows 32bit reads)
+PRAM0: 160kb (Continuous)
+XRAM0: 168kb (Not continuous)
+YRAM0: 48 kb (Not continuous)
+PRAM1: 160kb (Continuous)
+XRAM1: 168kb (Not continiuous)
+YRAM1: 48kb (Not continiuous)
+
+Total (non fragmented memory): 320kb
+Total SPU memory: 752kb
+
+Options:
+
+Usable (non-ROM and non-fragmented) memory: 606kb
+or
+Usable (non-ROM) memory: 1mb
+or
+Usable (virtual) memory: 1.5mb
+
+If we can map more from ROM, that adds another 1.5 mb (at least thats whats available for my calc) for a total of 4mb.
+
+Squashed Level 1 DOOM: 667kb.
+Full DOOM: 3.8mb.
+
+Maybe change the WAD so the sprites aren't big, we don't need all the color data, only grey bmp data anyways.
+Check how much we can decrease the size of that by.
+Maybe we can even hardcode the sprites and assets? Instead of reading lumps from the WAD file.
+Although, a seperate file might be handy since we only have access to 500kb of userspace ROM.

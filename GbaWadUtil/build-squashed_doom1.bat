@@ -1,0 +1,1 @@
+gbawadutil.exe -in squashed_doom1.wad -cfile ..\source\iwad\squasheddoom.c

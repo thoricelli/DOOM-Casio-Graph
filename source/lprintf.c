@@ -62,13 +62,18 @@ int lprintf(OutputLevels pri, const char *s, ...)
 	va_start(v,s);
 	
 	vsprintf(msg,s,v);
+
+	#ifdef FX
 	debug_and_wait(msg);
+	#endif
 	
 	va_end(v);
 
-    //int len = strlen(msg);
+	#ifndef FX
+    int len = strlen(msg);
 
-    //printf("%s\n", msg);*/
+    printf("%s\n", msg);
+	#endif
 
     return 0;
 }

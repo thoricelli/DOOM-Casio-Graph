@@ -31,6 +31,7 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 
 add_executable(doom ${SOURCES} ${ASSETS} ${ASSETS_${FXSDK_PLATFORM}})
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Xlinker -Map=output.map -Wl,--print-memory-usage")
+add_definitions(-DFX)
 target_compile_options(doom PRIVATE -Wall -Wextra -Os -g -flto -w)
 target_link_libraries(doom Gint::Gint)
 target_link_libraries(doom ${CMAKE_SOURCE_DIR}/std/lib/libmylib.a)

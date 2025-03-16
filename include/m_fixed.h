@@ -150,7 +150,7 @@ inline static fixed_t CONSTFUNC FixedMod(fixed_t a, fixed_t b)
 }
 
 //Approx Reciprocal of v
-/*inline static CONSTFUNC fixed_t FixedReciprocal(fixed_t v)
+inline static CONSTFUNC fixed_t FixedReciprocal(fixed_t v)
 {
     unsigned int val = v < 0 ? -v : v;
 
@@ -165,10 +165,10 @@ inline static fixed_t CONSTFUNC FixedMod(fixed_t a, fixed_t b)
     fixed_t result = (reciprocalTable[val] >> shift);
 
     return v < 0 ? -result : result;
-}*/
+}
 
 // Approximate reciprocal using Newton-Raphson method
-inline static CONSTFUNC fixed_t FixedReciprocal(fixed_t v)
+/*inline static CONSTFUNC fixed_t FixedReciprocal(fixed_t v)
 {
     if (v == 0) return INT_MAX; // Handle division by zero case
     
@@ -193,7 +193,7 @@ inline static CONSTFUNC fixed_t FixedReciprocal(fixed_t v)
     y >>= shift;
 
     return v < 0 ? -y : y;
-}
+}*/
 
 
 
