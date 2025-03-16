@@ -66,15 +66,15 @@ void V_DrawBackground(const char* flatname)
 
     for(unsigned int y = 0; y < SCREENHEIGHT; y++)
     {
-        for(unsigned int x = 0; x < 240; x+=64)
+        for(unsigned int x = 0; x < SCREENWIDTH; x+=64)
         {
             unsigned short* d = &dest[ ScreenYToOffset(y) + (x >> 1)];
             const byte* s = &src[((y&63) * 64) + (x&63)];
 
             unsigned int len = 64;
 
-            if( (240-x) < 64)
-                len = 240-x;
+            if( (SCREENWIDTH-x) < 64)
+                len = SCREENWIDTH-x;
 
             BlockCopy(d, s, len);
         }
@@ -95,13 +95,13 @@ void V_DrawPatch(int x, int y, int scrn, const patch_t* patch)
 
     int   col = 0;
 
-    const int   DX  = (240<<FRACBITS) / 320;
-    const int   DXI = (320<<FRACBITS) / 240;
-    const int   DY  = ((SCREENHEIGHT<<FRACBITS)+(FRACUNIT-1)) / 200;
+    const int   DX  = (SCREENWIDTH<<FRACBITS) / 320;
+    const int   DXI = (320<<FRACBITS) / SCREENWIDTH;
+    const int   DY  = ((SCREENHEIGHT<<16)) / 200;
     const int   DYI = (200<<FRACBITS) / SCREENHEIGHT;
 
     byte* byte_topleft = (byte*)_g->screens[scrn].data;
-    const int byte_pitch = (SCREENPITCH * 2);
+    const int byte_pitch = SCREENPITCH;
 
     const int left = ( x * DX ) >> FRACBITS;
     const int right =  ((x + patch->width) *  DX) >> FRACBITS;
@@ -116,7 +116,7 @@ void V_DrawPatch(int x, int y, int scrn, const patch_t* patch)
 
         const column_t* column = (const column_t *)((const byte*)patch + patch->columnofs[colindex]);
 
-        if (dc_x >= 240)
+        if (dc_x >= SCREENWIDTH)
             break;
 
         // step through the posts in a column
@@ -240,26 +240,8 @@ static void V_PlotPixel(int x, int y, int color)
 {
     byte* fb = (byte*)_g->screens[0].data;
 
-    byte* dest = &fb[(ScreenYToOffset(y) << 1) + x];
-
-    //The GBA must write in 16bits.
-    if((unsigned int)dest & 1)
-    {
-        //Odd addreses, we combine existing pixel with new one.
-        unsigned short* dest16 = (unsigned short*)(dest - 1);
-
-        unsigned short old = *dest16;
-
-        *dest16 = (old & 0xff) | (color << 8);
-    }
-    else
-    {
-        unsigned short* dest16 = (unsigned short*)dest;
-
-        unsigned short old = *dest16;
-
-        *dest16 = ((color & 0xff) | (old & 0xff00));
-    }
+    uint16_t* dest = (uint16_t*)&fb[y * SCREENWIDTH + x];
+    *dest = color | ((uint16_t)color << 8);
 }
 
 //

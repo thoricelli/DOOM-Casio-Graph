@@ -88,14 +88,6 @@ void R_InitBuffer()
 	// Same with base row offset.
     drawvars.byte_topleft = _g->screens[0].data;
 
-
-    //Copy lookup tables to fast VRAM.
-    BlockCopy((void*)xtoviewangle_vram, xtoviewangle, sizeof(xtoviewangle));
-
-    BlockCopy((void*)yslope_vram, yslope, sizeof(yslope));
-
-    BlockCopy((void*)distscale_vram, distscale, sizeof(distscale));
-
     for(int i = 0; i < SCREENWIDTH; i++)
         negonearray[i] = -1;
 

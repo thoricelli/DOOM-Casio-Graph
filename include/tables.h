@@ -48,6 +48,7 @@
 #define __TABLES__
 
 #include "m_fixed.h"
+#include "config.h"
 
 #define FINEANGLES              8192
 #define FINEMASK                (FINEANGLES-1)
@@ -89,17 +90,25 @@ extern const angle_t tantoangle[2049];
 
 extern const int viewangletox[4096];
 
+#if PHYSICAL_WIDTH != 128
+extern const angle_t xtoviewangle[121];
+#elif PHYSICAL_WIDTH == 128
 extern const angle_t xtoviewangle[PHYSICAL_WIDTH + 1];
-extern const angle_t* xtoviewangle_vram; //VRAM Copy.
+#endif
 
-
+#if PHYSICAL_WIDTH != 128
+extern const fixed_t yslope[160];
+#elif PHYSICAL_WIDTH == 128
 extern const fixed_t yslope[PHYSICAL_HEIGHT];
-extern const fixed_t* yslope_vram; //VRAM Copy.
+#endif
 
+#if PHYSICAL_WIDTH != 128
+extern const fixed_t distscale[120];
+#elif PHYSICAL_WIDTH == 128
 extern const fixed_t distscale[PHYSICAL_WIDTH];
-extern const fixed_t* distscale_vram; //VRAM Copy.
+#endif
 
-extern short* screenheightarray;
-extern short* negonearray;
+extern short screenheightarray[PHYSICAL_WIDTH];
+extern short negonearray[PHYSICAL_WIDTH];
 
 #endif

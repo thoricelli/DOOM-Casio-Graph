@@ -78,29 +78,16 @@
 //in IWRAM.
 //*****************************************
 
-#ifndef FX
-static byte vram1_spare[2560];
-
-static byte vram2_spare[SCREENWIDTH];
-static byte ram4_spare[SCREENWIDTH];
-
-static byte vram3_spare[1024];
-#else
-    #define vram1_spare ((byte*)0xe5007000)
-    #define vram2_spare ((byte*)0xe5007000 + 2560)
-    #define vram3_spare ((byte*)0xe5007000 + 2560)
-#endif
-
 //Stuff alloc'd in OAM memory.
 
 //512 bytes.
-static unsigned int* columnCacheEntries = (unsigned int*)&vram3_spare[0];
+static unsigned int columnCacheEntries[512];
 
 //240 bytes.
-short* floorclip = (short*)&vram3_spare[512];
+short floorclip[SCREENWIDTH];
 
 //240 bytes.
-short* ceilingclip = (short*)&vram3_spare[512+240];
+short ceilingclip[SCREENWIDTH];
 
 //992 bytes used. 32 byes left.
 
@@ -108,20 +95,12 @@ short* ceilingclip = (short*)&vram3_spare[512+240];
 
 //Stuff alloc'd in VRAM1 memory.
 
-//580 bytes
-const fixed_t* yslope_vram = (const fixed_t*)&vram1_spare[0];
-
-//480 bytes
-const fixed_t* distscale_vram = (const fixed_t*)&vram1_spare[580];
-
-//484 bytes.
-const angle_t* xtoviewangle_vram = (const angle_t*)&vram1_spare[580+480];
-
 //240 Bytes.
-short* wipe_y_lookup = (short*)&vram1_spare[580+480+484];
+short wipe_y_lookup[SCREENWIDTH];
 
 //384 Bytes
-vissprite_t** vissprite_ptrs = (vissprite_t**)&vram1_spare[580+480+484+240];
+static byte vissprites_ptr_tbl[MAXVISSPRITES];
+vissprite_t** vissprite_ptrs = (vissprite_t**)&vissprites_ptr_tbl[0];
 
 //2168 bytes used. 392 bytes left.
 
@@ -129,15 +108,15 @@ vissprite_t** vissprite_ptrs = (vissprite_t**)&vram1_spare[580+480+484+240];
 //Stuff alloc'd in VRAM2 memory.
 
 //240 bytes
-short* screenheightarray = (short*)&vram2_spare[0];
+short screenheightarray[SCREENWIDTH];
 
 //240 bytes
-short* negonearray = (short*)&ram4_spare[0];
+short negonearray[SCREENWIDTH];
 
 
-#define yslope yslope_vram
-#define distscale distscale_vram
-#define xtoviewangle xtoviewangle_vram
+#define yslope yslope
+#define distscale distscale
+#define xtoviewangle xtoviewangle
 
 //*****************************************
 //Column cache stuff.
@@ -212,8 +191,8 @@ const lighttable_t* fixedcolormap;
 int extralight;                           // bumped light from gun blasts
 draw_vars_t drawvars;
 
-static short   *mfloorclip;   // dropoff overflow
-static short   *mceilingclip; // dropoff overflow
+static const short   *mfloorclip;   // dropoff overflow
+static const short   *mceilingclip; // dropoff overflow
 static fixed_t spryscale;
 static fixed_t sprtopscreen;
 
@@ -2982,7 +2961,7 @@ void V_DrawPatchNoScale(int x, int y, const patch_t* patch)
                 else
                     *dest16 = ((color & 0xff) | (old & 0xff00));
 
-                dest += 240;
+                dest += SCREENWIDTH;
             }
 
             column = (const column_t*)((const byte*)column + column->length + 4);

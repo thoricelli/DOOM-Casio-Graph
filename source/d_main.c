@@ -217,7 +217,9 @@ static void D_Display (void)
         if (_g->automapmode & am_active)
             AM_Drawer();
 
+#if 0
         ST_Drawer(true, false);
+#endif
 
         HU_Drawer();
     }

@@ -79,7 +79,7 @@ extern fixed_t  viewx, viewy, viewz;
 
 extern angle_t  viewangle;
 
-extern short *floorclip, *ceilingclip;
+extern short floorclip[MAX_SCREENWIDTH], ceilingclip[SCREENWIDTH];
 
 extern const lighttable_t *fullcolormap;
 extern const lighttable_t *colormaps;

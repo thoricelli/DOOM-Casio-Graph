@@ -48,6 +48,8 @@
 
 #define CENTERY     (SCREENHEIGHT/2)
 
+#define ScreenYToOffset(x) (SCREENWIDTH * (x))
+
 
 // symbolic indices into color translation table pointer array
 typedef enum

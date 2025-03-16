@@ -131,7 +131,4 @@ inline static void LoadSRAM(byte* eeprom, unsigned int size, unsigned int offset
 #endif
 }
 
-//Cheap mul by 120. Not sure if faster.
-#define ScreenYToOffset(x) ((x << 7) - (x << 3))
-
 #endif // GBA_FUNCTIONS_H

@@ -68,7 +68,7 @@ static const int mapcolor_flat = 88;    // line with no floor/ceiling changes
 static const int mapcolor_sngl = 208;    // single player arrow color
 static const int map_secret_after = 0;
 
-static const int f_w = (SCREENWIDTH*2);
+static const int f_w = SCREENWIDTH;
 static const int f_h = SCREENHEIGHT-ST_SCALED_HEIGHT;// to allow runtime setting of width/height
 
 
