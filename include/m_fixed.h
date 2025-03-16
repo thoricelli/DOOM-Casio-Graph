@@ -73,12 +73,6 @@ inline static int CONSTFUNC D_abs(fixed_t x)
 
 fixed_t CONSTFUNC FixedMul(fixed_t a, fixed_t b);
 
-inline static fixed_t CONSTFUNC
-myabs(int i)
-{
-	return i < 0 ? -i : i;
-}
-
 /*
  * Fixed Point Division
  */
@@ -88,18 +82,8 @@ myabs(int i)
 
 inline static fixed_t CONSTFUNC FixedDiv(fixed_t a, fixed_t b)
 {
-    if ((myabs(a) >> 14) >= myabs(b))
-    {
-	return (a^b) < 0 ? INT_MIN : INT_MAX;
-    }
-    else
-    {
-	int64_t result;
-
-	result = ((int64_t) a << 16) / b;
-
-	return (fixed_t) result;
-    }
+    return (D_abs(a)>>14) >= D_abs(b) ? ((a^b)>>31) ^ INT_MAX :
+    (fixed_t)(((int_64_t) a << FRACBITS) / b);
 }
 
 /*
@@ -166,34 +150,6 @@ inline static CONSTFUNC fixed_t FixedReciprocal(fixed_t v)
 
     return v < 0 ? -result : result;
 }
-
-// Approximate reciprocal using Newton-Raphson method
-/*inline static CONSTFUNC fixed_t FixedReciprocal(fixed_t v)
-{
-    if (v == 0) return INT_MAX; // Handle division by zero case
-    
-    unsigned int abs_v = v < 0 ? -v : v;
-    unsigned int shift = 0;
-
-    // Normalize the value into a reasonable range
-    while (abs_v > (1 << FRACBITS))
-    {
-        abs_v >>= 1;
-        shift++;
-    }
-
-    // Initial estimate: Use bit shifting as a rough reciprocal approximation
-    fixed_t y = ((2 << FRACBITS) / abs_v); 
-
-    // Perform one or two Newton-Raphson iterations to refine accuracy
-    y = y * ((2 << FRACBITS) - ((v * y) >> FRACBITS)) >> FRACBITS;
-    y = y * ((2 << FRACBITS) - ((v * y) >> FRACBITS)) >> FRACBITS;
-
-    // Apply the shift
-    y >>= shift;
-
-    return v < 0 ? -y : y;
-}*/
 
 
 

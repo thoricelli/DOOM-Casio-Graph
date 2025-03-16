@@ -67,6 +67,8 @@
 
 #include "gba_functions.h"
 
+#include "doomdef.h"
+
 
 //#define static
 
@@ -78,7 +80,10 @@
 
 #ifndef FX
 static byte vram1_spare[2560];
-static byte vram2_spare[2560];
+
+static byte vram2_spare[SCREENWIDTH];
+static byte ram4_spare[SCREENWIDTH];
+
 static byte vram3_spare[1024];
 #else
     #define vram1_spare ((byte*)0xe5007000)
@@ -127,7 +132,7 @@ vissprite_t** vissprite_ptrs = (vissprite_t**)&vram1_spare[580+480+484+240];
 short* screenheightarray = (short*)&vram2_spare[0];
 
 //240 bytes
-short* negonearray = (short*)&vram2_spare[240];
+short* negonearray = (short*)&ram4_spare[0];
 
 
 #define yslope yslope_vram

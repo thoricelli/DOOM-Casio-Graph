@@ -1,10 +1,9 @@
 // PsionDoomDoc.cpp
 //
-// Copyright 17/02/2019 
+// Copyright 17/02/2019
 //
 
 #ifndef FX
-
 
 #include "i_system_win.h"
 
@@ -15,75 +14,77 @@
 
 #include "lprintf.h"
 
+#include "config.h"
+
+/*
+ SCREEN PROPERTIES
+*/
+
+#define I_SCREEN_WIDTH PHYSICAL_WIDTH
+#define I_SCREEN_HEIGHT PHYSICAL_HEIGHT
+
+#define SCALE_W 4
+#define SCALE_H 4
 
 //**************************************************************************************
 
 unsigned int vid_width = 0;
 unsigned int vid_height = 0;
 
-unsigned int screen_width = 0;
-unsigned int screen_height = 0;
-
 unsigned int y_pitch = 0;
 
-DoomWindow* window = NULL;
+DoomWindow *window = NULL;
 
-QApplication* app = NULL;
+QApplication *app = NULL;
 
-unsigned char* pb = NULL;
-unsigned char* pl = NULL;
+unsigned char *pb = NULL;
+unsigned char *pl = NULL;
 
-
-unsigned char* thearray = NULL;
+unsigned char *thearray = NULL;
 int thesize;
 
-unsigned short backbuffer[120 * 160];
-unsigned short frontbuffer[120 * 160];
+unsigned short backbuffer[I_SCREEN_WIDTH * I_SCREEN_HEIGHT];
+unsigned short frontbuffer[I_SCREEN_WIDTH * I_SCREEN_HEIGHT];
 
 //**************************************************************************************
 
 void I_InitScreen_e32()
 {
-    //Gives 480px on a 5(mx) and 320px on a Revo.
-    vid_width = 120;
+    vid_width = I_SCREEN_WIDTH;
 
-    vid_height = screen_height = 160;
+    vid_height = I_SCREEN_HEIGHT;
 }
 
 //**************************************************************************************
 
 void I_BlitScreenBmp_e32()
 {
-
 }
 
 //**************************************************************************************
 
 void I_StartWServEvents_e32()
 {
-
 }
 
 //**************************************************************************************
 
 void I_PollWServEvents_e32()
 {
-
 }
 
 //**************************************************************************************
 
 void I_ClearWindow_e32()
 {
-
 }
 
-unsigned short* I_GetBackBuffer()
+unsigned short *I_GetBackBuffer()
 {
     return &backbuffer[0];
 }
 
-unsigned short* I_GetFrontBuffer()
+unsigned short *I_GetFrontBuffer()
 {
     return &frontbuffer[0];
 }
@@ -100,9 +101,7 @@ void I_CreateWindow_e32()
 
     window->setAttribute(Qt::WA_PaintOnScreen);
 
-
-
-    window->resize(vid_width * 8, vid_height * 4);
+    window->resize(vid_width * SCALE_W, vid_height * SCALE_H);
 
     window->show();
 }
@@ -116,10 +115,10 @@ void I_CreateBackBuffer_e32()
 
 //**************************************************************************************
 
-void I_FinishUpdate_e32(const char* srcBuffer, const char* pallete, const unsigned int width, const unsigned int height)
+void I_FinishUpdate_e32(const char *srcBuffer, const char *pallete, const unsigned int width, const unsigned int height)
 {
-    pb = (unsigned char*)srcBuffer;
-    pl = (unsigned char*)pallete;
+    pb = (unsigned char *)srcBuffer;
+    pl = (unsigned char *)pallete;
 
     window->repaint();
 
@@ -130,7 +129,7 @@ void I_FinishUpdate_e32(const char* srcBuffer, const char* pallete, const unsign
     if (arrayCount == 0)
         return;
 
-    //dump the _g->viewangletox var
+    // dump the _g->viewangletox var
     QFile f("C:\\temp\\gfx_stbar.c");
     f.open(QIODevice::ReadWrite);
 
@@ -151,14 +150,12 @@ void I_FinishUpdate_e32(const char* srcBuffer, const char* pallete, const unsign
     f.write("\n};\n");
 
     f.close();
-
 }
 
 //**************************************************************************************
 
-void I_SetPallete_e32(const char* pallete)
+void I_SetPallete_e32(const char *pallete)
 {
-
 }
 
 //**************************************************************************************
@@ -186,7 +183,7 @@ void I_ProcessKeyEvents()
 
 #define MAX_MESSAGE_SIZE 1024
 
-void I_Error(const char* error, ...)
+void I_Error(const char *error, ...)
 {
     char msg[MAX_MESSAGE_SIZE];
 
@@ -199,11 +196,10 @@ void I_Error(const char* error, ...)
 
     printf("%s\n", msg);
 
-
     fflush(stderr);
     fflush(stdout);
 
-    //fgets(msg, sizeof(msg), stdin);
+    // fgets(msg, sizeof(msg), stdin);
 
     I_Quit_e32();
 }
@@ -212,7 +208,6 @@ void I_Error(const char* error, ...)
 
 void I_Quit_e32()
 {
-
 }
 
 //**************************************************************************************

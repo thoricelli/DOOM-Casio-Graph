@@ -47,6 +47,8 @@
 
 #include "global_data.h"
 
+#include "doomdef.h"
+
 //
 // All drawing to the view buffer is accomplished in this file.
 // The other refresh files only know about ccordinates,
@@ -94,9 +96,9 @@ void R_InitBuffer()
 
     BlockCopy((void*)distscale_vram, distscale, sizeof(distscale));
 
-    for(int i = 0; i < 120; i++)
+    for(int i = 0; i < SCREENWIDTH; i++)
         negonearray[i] = -1;
 
-    for(int i = 0; i < 120; i++)
-        screenheightarray[i] = 128;
+    for(int i = 0; i < SCREENWIDTH; i++)
+        screenheightarray[i] = SCREENWIDTH + 8;
 }

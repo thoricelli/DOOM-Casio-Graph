@@ -6,6 +6,8 @@
 #include <QApplication>
 #include <QWidget>
 
+#include "config.h"
+
 //GBA Keys
 #define KEYD_A          1
 #define KEYD_B          2
@@ -53,7 +55,7 @@ class DoomWindow : public QWidget
     {
         QPainter p(this);
 
-        QImage i((uchar*)pb, 240, 160, QImage::Format_Indexed8);
+        QImage i((uchar*)pb, PHYSICAL_WIDTH * 2, PHYSICAL_HEIGHT, QImage::Format_Indexed8);
         i.setColorCount(256);
 
         for(int p = 0; p < 256; p++)

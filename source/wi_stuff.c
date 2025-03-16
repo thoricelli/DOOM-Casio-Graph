@@ -82,8 +82,8 @@
 
 #define SP_TIMEX      8
 // proff/nicolas 09/20/98 -- changed for hi-res
-#define SP_TIMEY      160
-//#define SP_TIMEY      (SCREENHEIGHT-32)
+//#define SP_TIMEY      160
+#define SP_TIMEY      SCREENHEIGHT
 
 
 // NET GAME STUFF

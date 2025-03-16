@@ -62,7 +62,7 @@
 //jff 2/16/98 change 167 to ST_Y-1
 // CPhipps - changed to ST_TY
 // proff - changed to 200-ST_HEIGHT for stretching
-#define HU_TITLEY ((160-ST_SCALED_HEIGHT) - 1 - _g->hu_font[0]->height)
+#define HU_TITLEY ((SCREENHEIGHT-ST_SCALED_HEIGHT) - 1 - _g->hu_font[0]->height)
 
 //jff 2/16/98 add coord text widget coordinates
 // proff - changed to SCREENWIDTH to 320 for stretching
@@ -96,7 +96,7 @@
 #define HU_HUDX_LL 2
 #define HU_HUDY_LL (200-2*HU_GAPY-1)
 // proff/nicolas 09/20/98: Changed for high-res
-#define HU_HUDX_LR (320-120)
+//#define HU_HUDX_LR (320-SCREENWIDTH)
 #define HU_HUDY_LR (200-2*HU_GAPY-1)
 // proff/nicolas 09/20/98: Changed for high-res
 #define HU_HUDX_UR (320-96)
@@ -106,9 +106,9 @@
 #define HU_KEYSX_D   (HU_HUDX_LL)
 #define HU_KEYSGX_D  (HU_HUDX_LL+4*_g->hu_font['A'-HU_FONTSTART].width)
 #define HU_KEYSY_D   (HU_HUDY_LL+1*HU_GAPY)
-#define HU_WEAPX_D   (HU_HUDX_LR)
+//#define HU_WEAPX_D   (HU_HUDX_LR)
 #define HU_WEAPY_D   (HU_HUDY_LR+0*HU_GAPY)
-#define HU_AMMOX_D   (HU_HUDX_LR)
+//#define HU_AMMOX_D   (HU_HUDX_LR)
 #define HU_AMMOY_D   (HU_HUDY_LR+1*HU_GAPY)
 #define HU_HEALTHX_D (HU_HUDX_UR)
 #define HU_HEALTHY_D (HU_HUDY_UR+0*HU_GAPY)

@@ -89,14 +89,6 @@ typedef enum {
   unknown
 } Language_t;
 
-//
-// For resize of screen, at start of game.
-//
-
-#define BASE_WIDTH 320
-#define BASE_HEIGHT 200
-
-
 // It is educational but futile to change this
 //  scaling e.g. to 2. Drawing of status bar,
 //  menues etc. is tied to the scale implied
@@ -109,12 +101,12 @@ typedef enum {
 // when multiple screen sizes are supported
 
 // proff 08/17/98: Changed for high-res
-#define MAX_SCREENWIDTH  120
-#define MAX_SCREENHEIGHT 160
+#define MAX_SCREENWIDTH  PHYSICAL_WIDTH
+#define MAX_SCREENHEIGHT PHYSICAL_HEIGHT
 
 // SCREENWIDTH and SCREENHEIGHT define the visible size
-#define SCREENWIDTH 120
-#define SCREENHEIGHT 160
+#define SCREENWIDTH MAX_SCREENWIDTH
+#define SCREENHEIGHT MAX_SCREENHEIGHT
 #define SCREENPITCH SCREENWIDTH //In shorts.
 // SCREENPITCH is the size of one line in the buffer and
 // can be bigger than the SCREENWIDTH depending on the size

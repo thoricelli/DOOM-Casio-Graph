@@ -511,7 +511,7 @@ static void F_CastPrint (const char* text) // CPhipps - static, const char*
     }
 
     // draw it
-    cx = 120-width/2;
+    cx = SCREENWIDTH - width / 2;
     ch = text;
     while (ch)
     {
