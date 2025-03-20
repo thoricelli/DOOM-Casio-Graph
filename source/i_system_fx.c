@@ -64,12 +64,12 @@ void I_ClearWindow_e32()
 {
 }
 
-unsigned short *I_GetBackBuffer()
+unsigned char *I_GetBackBuffer()
 {
     //return &backbuffer[0];
 }
 
-unsigned short *I_GetFrontBuffer()
+unsigned char *I_GetFrontBuffer()
 {
     //return &frontbuffer[0];
 }

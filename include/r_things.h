@@ -49,6 +49,4 @@ void R_InitSprites(const char * const * namelist);
 #define MINZ        (FRACUNIT*4)
 #define MAXZ        (FRACUNIT*1280)
 
-#define BASEYCENTER 100
-
 #endif

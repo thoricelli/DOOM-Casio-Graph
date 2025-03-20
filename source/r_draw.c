@@ -92,5 +92,5 @@ void R_InitBuffer()
         negonearray[i] = -1;
 
     for(int i = 0; i < SCREENWIDTH; i++)
-        screenheightarray[i] = SCREENWIDTH + 8;
+        screenheightarray[i] = SCREENWIDTH / 2;
 }

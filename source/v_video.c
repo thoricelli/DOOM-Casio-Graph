@@ -59,7 +59,7 @@ void V_DrawBackground(const char* flatname)
     const byte *src;
     int         lump;
 
-    unsigned short *dest = _g->screens[0].data;
+    unsigned char *dest = _g->screens[0].data;
 
     // killough 4/17/98:
     src = W_CacheLumpNum(lump = _g->firstflat + R_FlatNumForName(flatname));
@@ -68,7 +68,7 @@ void V_DrawBackground(const char* flatname)
     {
         for(unsigned int x = 0; x < SCREENWIDTH; x+=64)
         {
-            unsigned short* d = &dest[ ScreenYToOffset(y) + (x >> 1)];
+            unsigned char* d = &dest[ ScreenYToOffset(y) + (x >> 1)];
             const byte* s = &src[((y&63) * 64) + (x&63)];
 
             unsigned int len = 64;
@@ -97,7 +97,7 @@ void V_DrawPatch(int x, int y, int scrn, const patch_t* patch)
 
     const int   DX  = (SCREENWIDTH<<FRACBITS) / 320;
     const int   DXI = (320<<FRACBITS) / SCREENWIDTH;
-    const int   DY  = ((SCREENHEIGHT<<16)) / 200;
+    const int   DY  = ((SCREENHEIGHT<<FRACBITS)) / 200;
     const int   DYI = (200<<FRACBITS) / SCREENHEIGHT;
 
     byte* byte_topleft = (byte*)_g->screens[scrn].data;
@@ -145,25 +145,7 @@ void V_DrawPatch(int x, int y, int scrn, const patch_t* patch)
             {
                 unsigned short color = source[frac >> FRACBITS];
 
-                //The GBA must write in 16bits.
-                if((unsigned int)dest & 1)
-                {
-                    //Odd addreses, we combine existing pixel with new one.
-                    unsigned short* dest16 = (unsigned short*)(dest - 1);
-
-
-                    unsigned short old = *dest16;
-
-                    *dest16 = (old & 0xff) | (color << 8);
-                }
-                else
-                {
-                    unsigned short* dest16 = (unsigned short*)dest;
-
-                    unsigned short old = *dest16;
-
-                    *dest16 = ((color & 0xff) | (old & 0xff00));
-                }
+                *dest = color;
 
                 dest += byte_pitch;
                 frac += fracstep;
@@ -225,12 +207,12 @@ void V_FillRect(int x, int y, int width, int height, byte colour)
 {
     byte* fb = (byte*)_g->screens[0].data;
 
-    byte* dest = &fb[(ScreenYToOffset(y) << 1) + x];
+    byte* dest = &fb[(ScreenYToOffset(y)) + x];
 
     while (height--)
     {
         BlockSet(dest, colour, width);
-        dest += (SCREENPITCH << 1);
+        dest += SCREENPITCH;
     }
 }
 
@@ -238,10 +220,10 @@ void V_FillRect(int x, int y, int width, int height, byte colour)
 
 static void V_PlotPixel(int x, int y, int color)
 {
-    byte* fb = (byte*)_g->screens[0].data;
+    /*byte* fb = (byte*)_g->screens[0].data;
 
     uint16_t* dest = (uint16_t*)&fb[y * SCREENWIDTH + x];
-    *dest = color | ((uint16_t)color << 8);
+    *dest = color | ((uint16_t)color << 8);*/
 }
 
 //

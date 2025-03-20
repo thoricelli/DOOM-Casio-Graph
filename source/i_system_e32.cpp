@@ -43,8 +43,8 @@ unsigned char *pl = NULL;
 unsigned char *thearray = NULL;
 int thesize;
 
-unsigned short backbuffer[I_SCREEN_WIDTH * I_SCREEN_HEIGHT];
-unsigned short frontbuffer[I_SCREEN_WIDTH * I_SCREEN_HEIGHT];
+unsigned char backbuffer[I_SCREEN_WIDTH * I_SCREEN_HEIGHT];
+unsigned char frontbuffer[I_SCREEN_WIDTH * I_SCREEN_HEIGHT];
 
 //**************************************************************************************
 
@@ -79,12 +79,12 @@ void I_ClearWindow_e32()
 {
 }
 
-unsigned short *I_GetBackBuffer()
+unsigned char *I_GetBackBuffer()
 {
     return &backbuffer[0];
 }
 
-unsigned short *I_GetFrontBuffer()
+unsigned char *I_GetFrontBuffer()
 {
     return &frontbuffer[0];
 }
@@ -123,6 +123,8 @@ void I_FinishUpdate_e32(const char *srcBuffer, const char *pallete, const unsign
     window->repaint();
 
     app->processEvents();
+
+    return;
 
     int arrayCount = thesize;
 

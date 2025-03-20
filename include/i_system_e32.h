@@ -32,9 +32,9 @@ void I_Error (const char *error, ...);
 
 void I_Quit_e32();
 
-unsigned short* I_GetBackBuffer();
+unsigned char* I_GetBackBuffer();
 
-unsigned short* I_GetFrontBuffer();
+unsigned char* I_GetFrontBuffer();
 
 #ifdef __cplusplus
 }

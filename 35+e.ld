@@ -25,7 +25,8 @@ MEMORY
 	   0x1100 bytes near the end of the user RAM, which is larger; the 6k
 	   left for the user are honored in both cases. Unused memory from the
 	   exposed 6k and non-exposed memory is available through malloc(). */
-	ram   (rw):   o = 0x08100200, l = 32k
+	/* ram   (rw):   o = 0x08100200, l = 32k */
+	ram   (rw):   o = 0x88040000, l = 256k
 
 	/* This region represents the first block of user RAM. Linker arranges
 	   sections as if linked to address 0, then gint's runtime determines

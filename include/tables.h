@@ -96,9 +96,9 @@ extern const angle_t xtoviewangle[121];
 extern const angle_t xtoviewangle[PHYSICAL_WIDTH + 1];
 #endif
 
-#if PHYSICAL_WIDTH != 128
+#if PHYSICAL_HEIGHT != 64
 extern const fixed_t yslope[160];
-#elif PHYSICAL_WIDTH == 128
+#elif PHYSICAL_HEIGHT == 64
 extern const fixed_t yslope[PHYSICAL_HEIGHT];
 #endif
 

@@ -74,9 +74,10 @@ int wipe_EndScreen(void)
 static int wipe_doMelt(int ticks)
 {
     boolean done = true;
+    return done;
 
-    unsigned short* backbuffer = I_GetBackBuffer();
-    unsigned short* frontbuffer = I_GetFrontBuffer();
+    unsigned char* backbuffer = I_GetBackBuffer();
+    unsigned char* frontbuffer = I_GetFrontBuffer();
 
     while (ticks--)
     {
@@ -103,9 +104,9 @@ static int wipe_doMelt(int ticks)
                 if (wipe_y_lookup[i] + dy >= SCREENHEIGHT)
                     dy = SCREENHEIGHT - wipe_y_lookup[i];
 
-                unsigned short* s = &frontbuffer[i] + ((SCREENHEIGHT - dy - 1) * SCREENPITCH);
+                unsigned char* s = &frontbuffer[i] + ((SCREENHEIGHT - dy - 1) * SCREENPITCH);
 
-                unsigned short* d = &frontbuffer[i] + ((SCREENHEIGHT - 1) * SCREENPITCH);
+                unsigned char* d = &frontbuffer[i] + ((SCREENHEIGHT - 1) * SCREENPITCH);
 
                 // scroll down the column. Of course we need to copy from the bottom... up to
                 // SCREENHEIGHT - yLookup - dy

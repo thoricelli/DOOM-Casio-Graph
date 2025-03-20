@@ -2,12 +2,12 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
 //FX
-//#define PHYSICAL_WIDTH  128
-//#define PHYSICAL_HEIGHT 64
+#define PHYSICAL_WIDTH  128
+#define PHYSICAL_HEIGHT 64
 
 //GBA
-#define PHYSICAL_WIDTH  120
-#define PHYSICAL_HEIGHT 160
+//#define PHYSICAL_WIDTH  120
+//#define PHYSICAL_HEIGHT 160
 
 #ifdef _MSC_VER
     #define __WINS__

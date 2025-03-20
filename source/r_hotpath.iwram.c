@@ -243,6 +243,10 @@ boolean highDetail = false;
 
 const int viewheight = SCREENHEIGHT-ST_SCALED_HEIGHT;
 const int centery = (SCREENHEIGHT-ST_SCALED_HEIGHT)/2;
+
+//Used by the gun sprite
+#define BASEYCENTER 100
+
 static const int centerxfrac = (SCREENWIDTH/2) << FRACBITS;
 static const int centeryfrac = ((SCREENHEIGHT-ST_SCALED_HEIGHT)/2) << FRACBITS;
 
@@ -262,17 +266,7 @@ static const angle_t clipangle = 537395200; //xtoviewangle[0];
 static const int skytexturemid = 100*FRACUNIT;
 static const fixed_t skyiscale = (FRACUNIT*200)/((SCREENHEIGHT-ST_HEIGHT)+16);
 
-
-//********************************************
-// On the GBA we exploit that an 8 bit write
-// will mirror to the upper 8 bits too.
-// it saves an OR and Shift per pixel.
-//********************************************
-#ifdef GBA
-    typedef byte pixel;
-#else
-    typedef unsigned short pixel;
-#endif
+typedef unsigned char pixel;
 
 //********************************************
 // This goes here as we want the Thumb code
@@ -519,17 +513,9 @@ static const lighttable_t* R_LoadColorMap(int lightlevel)
 #define COLEXTRABITS 9
 #define COLBITS (FRACBITS + COLEXTRABITS)
 
-inline static void R_DrawColumnPixel(unsigned short* dest, const byte* source, const byte* colormap, unsigned int frac)
+inline static void R_DrawColumnPixel(pixel* dest, const byte* source, const byte* colormap, unsigned int frac)
 {
-    pixel* d = (pixel*)dest;
-
-#ifdef GBA
-    *d = colormap[source[frac>>COLBITS]];
-#else
-    unsigned int color = colormap[source[frac>>COLBITS]];
-
-    *d = (color | (color << 8));
-#endif
+    *dest = colormap[source[frac >> COLBITS]];
 }
 
 static void R_DrawColumn (const draw_column_vars_t *dcvars)
@@ -543,7 +529,7 @@ static void R_DrawColumn (const draw_column_vars_t *dcvars)
     const byte *source = dcvars->source;
     const byte *colormap = dcvars->colormap;
 
-    unsigned short* dest = drawvars.byte_topleft + ScreenYToOffset(dcvars->yl) + dcvars->x;
+    pixel* dest = drawvars.byte_topleft + ScreenYToOffset(dcvars->yl) + dcvars->x;
 
     const unsigned int		fracstep = (dcvars->iscale << COLEXTRABITS);
     unsigned int frac = (dcvars->texturemid + (dcvars->yl - centery)*dcvars->iscale) << COLEXTRABITS;
@@ -610,7 +596,7 @@ static void R_DrawColumnHiRes(const draw_column_vars_t *dcvars)
     const byte *source = dcvars->source;
     const byte *colormap = dcvars->colormap;
 
-    volatile unsigned short* dest = drawvars.byte_topleft + ScreenYToOffset(dcvars->yl) + dcvars->x;
+    volatile unsigned char* dest = drawvars.byte_topleft + ScreenYToOffset(dcvars->yl) + dcvars->x;
 
     const unsigned int		fracstep = (dcvars->iscale << COLEXTRABITS);
     unsigned int frac = (dcvars->texturemid + (dcvars->yl - centery)*dcvars->iscale) << COLEXTRABITS;
@@ -619,26 +605,12 @@ static void R_DrawColumnHiRes(const draw_column_vars_t *dcvars)
     //  e.g. a DDA-lile scaling.
     // This is as fast as it gets.
 
-    unsigned int mask;
-    unsigned int shift;
-
-    if(!dcvars->odd_pixel)
-    {
-        mask = 0xff00;
-        shift = 0;
-    }
-    else
-    {
-        mask = 0xff;
-        shift = 8;
-    }
-
     while(count--)
     {
         unsigned int old = *dest;
         unsigned int color = colormap[source[frac>>COLBITS]];
 
-        *dest = ((old & mask) | (color << shift));
+        *dest = ((old) | (color));
 
         dest+=SCREENWIDTH;
         frac+=fracstep;
@@ -688,7 +660,7 @@ static void R_DrawFuzzColumn (const draw_column_vars_t *dcvars)
 
     const byte* colormap = &fullcolormap[6*256];
 
-    unsigned short* dest = drawvars.byte_topleft + ScreenYToOffset(dc_yl) + dcvars->x;
+    unsigned char* dest = drawvars.byte_topleft + ScreenYToOffset(dc_yl) + dcvars->x;
 
     unsigned int fuzzpos = _g->fuzzpos;
 
@@ -803,38 +775,11 @@ static void R_DrawVisSprite(const vissprite_t *vis)
     if(hires)
         xiscale >>= 1;
 
-    dcvars.x = vis->x1;
-    dcvars.odd_pixel = false;
-
-    while(dcvars.x < SCREENWIDTH)
+    for (dcvars.x = vis->x1; dcvars.x <= vis->x2; dcvars.x++, frac += vis->xiscale)
     {
-        const column_t* column = (const column_t *) ((const byte *)patch + patch->columnofs[frac >> FRACBITS]);
+        const column_t* column = (const column_t*)((const byte*)patch + patch->columnofs[frac >> FRACBITS]);
+
         R_DrawMaskedColumn(colfunc, &dcvars, column);
-
-        frac += xiscale;
-
-        if(((frac >> FRACBITS) >= patch->width) || frac < 0)
-            break;
-
-        dcvars.odd_pixel = true;
-
-        if(!hires)
-            dcvars.x++;
-
-        if(dcvars.x >= SCREENWIDTH)
-            break;
-
-
-        const column_t* column2 = (const column_t *) ((const byte *)patch + patch->columnofs[frac >> FRACBITS]);
-        R_DrawMaskedColumn(colfunc, &dcvars, column2);
-
-        frac += xiscale;
-
-        if(((frac >> FRACBITS) >= patch->width) || frac < 0)
-            break;
-
-        dcvars.x++;
-        dcvars.odd_pixel = false;
     }
 }
 
@@ -1106,7 +1051,9 @@ static void R_DrawPSprite (pspdef_t *psp, int lightlevel)
     const patch_t* patch = W_CacheLumpNum(sprframe->lump[0]+_g->firstspritelump);
     // calculate edges of the shape
     fixed_t       tx;
-    tx = psp->sx-160*FRACUNIT;
+    //thoricelli: TODO make this a bit better please, this sucks.
+    //This piece of code confuses the hell out of me.
+    tx = psp->sx-(SCREENWIDTH + 30)*FRACUNIT;
 
     tx -= patch->leftoffset<<FRACBITS;
     x1 = (centerxfrac + FixedMul (tx, pspritescale))>>FRACBITS;
@@ -1116,8 +1063,6 @@ static void R_DrawPSprite (pspdef_t *psp, int lightlevel)
 
     width = patch->width;
     topoffset = patch->topoffset<<FRACBITS;
-
-
 
     // off the side
     if (x2 < 0 || x1 > SCREENWIDTH)
@@ -1259,18 +1204,11 @@ static void R_DrawMasked(void)
 #pragma GCC push_options
 #pragma GCC optimize ("Ofast")
 
-inline static void R_DrawSpanPixel(unsigned short* dest, const byte* source, const byte* colormap, unsigned int position)
+inline static void R_DrawSpanPixel(unsigned char* dest, const byte* source, const byte* colormap, unsigned int position)
 {
+    pixel* d = (pixel*)dest;
 
- pixel* d = (pixel*)dest;
-
-#ifdef GBA
     *d = colormap[source[((position >> 4) & 0x0fc0) | (position >> 26)]];
-#else
-    unsigned int color = colormap[source[((position >> 4) & 0x0fc0) | (position >> 26)]];
-
-    *d = (color | (color << 8));
-#endif
 }
 
 static void R_DrawSpan(unsigned int y, unsigned int x1, unsigned int x2, const draw_span_vars_t *dsvars)
@@ -1280,7 +1218,7 @@ static void R_DrawSpan(unsigned int y, unsigned int x1, unsigned int x2, const d
     const byte *source = dsvars->source;
     const byte *colormap = dsvars->colormap;
 
-    unsigned short* dest = drawvars.byte_topleft + ScreenYToOffset(y) + x1;
+    pixel* dest = drawvars.byte_topleft + ScreenYToOffset(y) + x1;
 
     const unsigned int step = dsvars->step;
     unsigned int position = dsvars->position;
@@ -1570,7 +1508,8 @@ static void R_ProjectSprite (mobj_t* thing, int lightlevel)
     vis->mobjflags = thing->flags;
     // proff 11/06/98: Changed for high-res
     vis->scale = FixedDiv(projectiony, tz);
-    vis->iscale = tz >> 7;
+    // thoricelli - used to be tz >> 7 but it broke when changing resolution, find way to optimize this later.
+    vis->iscale = FixedReciprocal(vis->scale);
     vis->patch = patch;
     vis->gx = fx;
     vis->gy = fy;
@@ -1936,7 +1875,7 @@ static void R_RenderSegLoop (int rw_x)
         // mark floor / ceiling areas
 
         int yh = bottomfrac>>HEIGHTBITS;
-        int yl = (topfrac+HEIGHTUNIT-1)>>HEIGHTBITS;
+        int yl = (topfrac)>>HEIGHTBITS;
 
         int cc_rwx = ceilingclip[rw_x];
         int fc_rwx = floorclip[rw_x];
@@ -2928,7 +2867,7 @@ void V_DrawPatchNoScale(int x, int y, const patch_t* patch)
     x -= patch->leftoffset;
 
     byte* desttop = (byte*)_g->screens[0].data;
-    desttop += (ScreenYToOffset(y) << 1) + x;
+    desttop += (ScreenYToOffset(y)) + x;
 
     unsigned int width = patch->width;
 
@@ -2936,31 +2875,18 @@ void V_DrawPatchNoScale(int x, int y, const patch_t* patch)
     {
         const column_t* column = (const column_t*)((const byte*)patch + patch->columnofs[col]);
 
-        unsigned int odd_addr = (size_t)desttop & 1;
-
-        byte* desttop_even = (byte*)((size_t)desttop & ~1);
-
         // step through the posts in a column
         while (column->topdelta != 0xff)
         {
             const byte* source = (const byte*)column + 3;
-            byte* dest = desttop_even + (ScreenYToOffset(column->topdelta) << 1);
+            byte* dest = desttop + (ScreenYToOffset(column->topdelta));
 
             unsigned int count = column->length;
 
             while (count--)
             {
                 unsigned int color = *source++;
-                volatile unsigned short* dest16 = (volatile unsigned short*)dest;
-
-                unsigned int old = *dest16;
-
-                //The GBA must write in 16bits.
-                if(odd_addr)
-                    *dest16 = (old & 0xff) | (color << 8);
-                else
-                    *dest16 = ((color & 0xff) | (old & 0xff00));
-
+                *dest = color;
                 dest += SCREENWIDTH;
             }
 
